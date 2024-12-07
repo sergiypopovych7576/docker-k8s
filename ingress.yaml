@@ -1,0 +1,40 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: ui-ingress
+  namespace: popov-test
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /
+spec:
+  rules:
+  - host: "172.17.107.110.nip.io"  # Replace with your Minikube IP or custom domain
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: ui-service
+            port:
+              number: 80
+
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: backend-ingress
+  namespace: popov-test
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /$2  # Keep the path after '/api'
+spec:
+  rules:
+  - host: "172.17.107.110.nip.io"  # Replace with your Minikube IP or custom domain
+    http:
+      paths:
+      - path: /api(/|$)(.*)  # Match '/api' and forward the rest of the path
+        pathType: ImplementationSpecific  # Use regex for path matching
+        backend:
+          service:
+            name: backend-service
+            port:
+              number: 80

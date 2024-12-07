@@ -1,0 +1,32 @@
+version: '3.8'
+services:
+  mongodb:
+    image: 'mongo'
+    container_name: mongodb
+    volumes:
+      - data:/data/db
+    networks:
+      - goals-net
+  backend:
+    build: ./backend
+    container_name: backend
+    networks:
+      - goals-net
+    ports:
+      - "80:80"
+    depends_on:
+      - mongodb
+  ui:
+    build: ./frontend
+    container_name: ui
+    networks:
+     - goals-net
+    ports:
+      - "3000:3000"
+    depends_on:
+      - backend
+networks:
+  goals-net:
+    driver: bridge
+volumes:
+  data:

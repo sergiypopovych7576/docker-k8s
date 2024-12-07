@@ -1,0 +1,48 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata: 
+  name: backend-deployment
+  namespace: popov-test
+  labels:
+    app: backend
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: backend
+  template:
+    metadata:
+      labels:
+        app: backend
+    spec:
+      containers:
+      - name: backend
+        image: popovychsergiy76/backend:8
+        ports:
+        - containerPort: 80
+        env:
+        - name: secretCode
+          valueFrom:
+            secretKeyRef:
+              name: secret
+              key: secretCode
+        - name: environment
+          valueFrom:
+            configMapKeyRef:
+              name: config
+              key: environment
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: backend-service
+  namespace: popov-test
+spec:
+  selector:
+    app: backend  # This should match the label from your backend deployment
+  ports:
+    - protocol: TCP
+      port: 80       # The port on which the service is exposed internally
+      targetPort: 80 # The port on which your backend container is listening
+  type: ClusterIP   # Expose the service on a ClusterIP (internal access only)

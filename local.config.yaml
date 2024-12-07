@@ -1,0 +1,8 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: config
+  namespace: popov-test
+data:
+  environment: production
+  environment-two: production2

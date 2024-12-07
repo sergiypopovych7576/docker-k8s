@@ -1,0 +1,26 @@
+replicas: 1
+
+backend:
+  image: popovychsergiy76/backend:8
+
+secret:
+  name: secret
+  key: secretCode
+
+configMap:
+  name: config
+  key: environment-two
+
+service:
+  type: ClusterIP
+  name: backend-service
+  port: 80
+
+serviceAccount:
+  create: true
+
+ingress:
+  enabled: false
+
+autoscaling:
+  enabled: false
